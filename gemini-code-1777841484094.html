@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Lindsey!</title>
+    <style>
+        :root {
+            /* Texas Flag Colors */
+            --tx-navy: #002868; 
+            --tx-red: #BF0A30;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; 
+        }
+
+        .card-container {
+            width: 90vw;
+            max-width: 400px;
+            aspect-ratio: 3 / 4; 
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            transform-style: preserve-3d;
+        }
+
+        .card-inner.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 5%; 
+            box-sizing: border-box;
+        }
+
+        .card-front {
+            background-color: var(--tx-navy);
+            color: white;
+            /* Added a red border to the front to incorporate both colors */
+            border: clamp(4px, 1vw, 8px) solid var(--tx-red);
+        }
+
+        .card-front h1 {
+            font-size: clamp(2rem, 8vw, 3rem);
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .card-front p {
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            color: #f0f4f8;
+            margin: 0;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .card-back {
+            background-color: var(--card-bg);
+            color: var(--tx-navy);
+            transform: rotateY(180deg);
+            border: clamp(4px, 1vw, 8px) solid var(--tx-red);
+        }
+
+        .card-back h2 {
+            font-size: clamp(1.5rem, 6vw, 2.2rem);
+            margin-top: 0;
+            color: var(--tx-red);
+        }
+
+        .card-back p {
+            font-size: clamp(1rem, 3.5vw, 1.15rem);
+            line-height: 1.5;
+            padding: 0 10px;
+        }
+
+        .instruction {
+            font-size: clamp(0.8rem, 3vw, 1rem);
+            opacity: 0.8;
+            margin-top: 15%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card-container" id="birthdayCard">
+        <div class="card-inner" id="cardInner">
+            
+            <div class="card-face card-front">
+                <h1>Happy Birthday<br>Lindsey!</h1>
+                <p>★ Deep in the heart of Texas ★</p>
+                <div class="instruction">Tap to open</div>
+            </div>
+
+            <div class="card-face card-back">
+                <h2>Have a great day!</h2>
+                <p>Wishing you a wonderful birthday filled with joy, laughter, and everything you love.</p>
+                <p>Love,<br>Uncle Robert</p>
+            </div>
+
+        </div>
+    </div>
+
+    <audio id="birthdaySong" src="song.mp3"></audio>
+
+    <script>
+        const cardContainer = document.getElementById('birthdayCard');
+        const cardInner = document.getElementById('cardInner');
+        const birthdaySong = document.getElementById('birthdaySong');
+        let hasFlipped = false;
+
+        cardContainer.addEventListener('click', () => {
+            cardInner.classList.toggle('is-flipped');
+            
+            if (!hasFlipped) {
+                fireConfetti();
+                birthdaySong.play().catch(error => console.log("Audio playback was prevented:", error));
+                hasFlipped = true;
+            }
+        });
+
+        function fireConfetti() {
+            // Updated to Texas Flag Colors
+            const colors = ['#002868', '#BF0A30', '#FFFFFF'];
+            const isMobile = window.innerWidth < 600;
+            const particleCount = isMobile ? 40 : 85;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Adds a tiny outline to the white confetti so it doesn't vanish against light backgrounds
+                if(confetti.style.backgroundColor === 'rgb(255, 255, 255)') {
+                    confetti.style.border = '1px solid #ccc';
+                }
+
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = '-20px';
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                
+                document.body.appendChild(confetti);
+
+                const duration = Math.random() * 3000 + 2000; 
+                const fallDistance = window.innerHeight + 50;
+
+                confetti.animate([
+                    { transform: `translate3d(0,0,0) rotate(0deg)`, opacity: 1 },
+                    { transform: `translate3d(${Math.random()*150 - 75}px, ${fallDistance}px, 0) rotate(${Math.random()*720}deg)`, opacity: 0 }
+                ], {
+                    duration: duration,
+                    easing: 'cubic-bezier(.37,0,.63,1)',
+                    fill: 'forwards'
+                });
+
+                setTimeout(() => confetti.remove(), duration);
+            }
+        }
+    </script>
+</body>
+</html>
